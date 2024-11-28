@@ -1,8 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { PokemonObjt } from '../pokemonShortObj'
 
-const PokemonInfo = () => {
+interface PokemonInfoParams{
+    selectedPokemon: PokemonObjt
+}
+
+const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
+    
   return (
-    <div>PokemonInfo</div>
+    <div>
+        {selectedPokemon.url === "" ?
+            <p>
+                {selectedPokemon.name === "" && "No pokemon selected :("}
+                {(selectedPokemon.name !== "" && selectedPokemon.url === "") && 
+                `Pokemon ${selectedPokemon.name} doesn't exist`}
+            </p>
+        :
+            <p>
+                {selectedPokemon.name}
+            </p>
+        }
+    </div>
   )
 }
 

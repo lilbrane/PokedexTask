@@ -3,11 +3,8 @@ import './App.css';
 import Home from './Components/Home';
 import Topbar from './Components/Topbar';
 import axios from 'axios';
-
-interface PokemonObjt {
-  name: string,
-  url: string
-}
+import PokemonInfo from './Components/PokemonInfo';
+import {PokemonObjt} from "./pokemonShortObj.js"
 
 function App() {
   const [pokemon, setPokemon] = useState([]);
@@ -26,13 +23,12 @@ function App() {
     };
   
     fetchData();
-  
-   
   }, []);
 
   return (
     <div className="App bg-primaryWhite">
       <Topbar availablePokemon={pokemon} selectedPokemon={selectedPokemon} setSelectedPokemon={setSelectedPokemon}/>
+      <PokemonInfo  selectedPokemon={selectedPokemon}/>
     </div>
   );
 }
