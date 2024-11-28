@@ -3,7 +3,14 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
 body {
+  @apply bg-[#e0e6e0] h-full;
+}
+
+
+body {
+  background-color: "#e0e6e0";
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',

@@ -1,12 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import Home from './Components/Home';
 import Topbar from './Components/Topbar';
+import axios from 'axios';
+
+interface PokemonObjt {
+  name: string,
+  url: string
+}
 
 function App() {
+  const [pokemon, setPokemon] = useState([]);
+  const [selectedPokemon, setSelectedPokemon] = useState<PokemonObjt>({name: "", url: ""});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/getPokemon")
+
+        console.log(response.data.data)
+        setPokemon(response.data.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
+  
+   
+  }, []);
+
   return (
-    <div className="App">
-      <Topbar/>
+    <div className="App bg-primaryWhite">
+      <Topbar availablePokemon={pokemon} selectedPokemon={selectedPokemon} setSelectedPokemon={setSelectedPokemon}/>
     </div>
   );
 }
