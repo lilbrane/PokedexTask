@@ -8,9 +8,15 @@ export interface PokemonObjt {
     height: number
     weight: number
     image: string
+    types: string[]
     abilities: [{
       name: string,
       effect: string
+    }]
+    sprites: [{
+      gen: string,
+      type: string,
+      sprite: string
     }]
   }
  
@@ -24,8 +30,14 @@ export interface PokemonObjt {
     height: 0,
     weight: 0,
     image: "",
+    types: [],
     abilities: [{
       name: "",
       effect: ""
+    }],
+    sprites: [{
+      gen: "",
+      type: "",
+      sprite: ""
     }]
   }

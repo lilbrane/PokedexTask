@@ -57,37 +57,55 @@ app.get("/getPokemon", async(req,res) => {
     }
 })
 
-app.get("/getPokemon/:id", async(req,res) => {
-    const { id } = req.params;
+app.get("/getPokemon/:name", async(req,res) => {
+    const { name } = req.params;
+
+    console.log(name)
 
     try {
-        const response = await axios.get("https://pokeapi.co/api/v2/pokemon/"+id);
+        const response = await axios.get("https://pokeapi.co/api/v2/pokemon/"+name);
 
         const { data } = response;
-
 
         // get front_default sprites of all generations
         const defaultSprites = [];
         Object.keys(data.sprites.other).forEach(source => {
-            if(data.sprites.other[source].front_default)
+            if(data.sprites.other[source].front_default && source !== "official-artwork")
                     defaultSprites.push(data.sprites.other[source].front_default)
         })
 
+        const sprites = [];
+
+//   // Iterating through generations
+        Object.entries(data.sprites.versions).forEach(([generation, versions]) => {
+            const spriteInfo = {
+                gen: "",
+                version: "",
+                sprite: ""
+            }
+
+            spriteInfo.gen = generation
+
+            // Iterating through versions
+            Object.entries(versions).forEach(([version, sprites]) => {
+                spriteInfo.version = version
+                spriteInfo.sprite = sprites.front_default
+            });
+
+            if(spriteInfo.sprite)
+                sprites.push(spriteInfo)
+        });
+
         // getting the abilities
-       
         let abilities = await Promise.all(
             data.abilities.map(async(ability) => {
                 const {error, abilityInfo} = await getAbility(ability.ability)
-                console.log(abilityInfo)
                 return abilityInfo
             })
         )
 
-        //   // getting the abilities
-        //   data.abilities.map(ability => {
-        //       const {error, abilityInfo} = await getAbility(ability.ability)
-        //       abilities.push()
-        //   })
+        // pokemon types
+        let types = data.types.map(type => type.type.name)
 
         for (const ability of data.abilities) {
             try {
@@ -103,13 +121,27 @@ app.get("/getPokemon/:id", async(req,res) => {
             }
         }
 
+        // weight is in hectograms, conver to kg rounded to two decimals
+        const weightInKg = Math.round((data.weight / 10) * 100) / 100;
+        const heightInCm = data.height * 10;
+
+        const pokemonNameCaps = data.name.charAt(0).toUpperCase() + data.name.substring(1, data.name.length)
+        // const weightInKg = data.weight;
+
+        
+        const images = [{
+            gen: "default",
+            sprite: data.sprites.other["official-artwork"].front_default
+        }, ...sprites];
+
         const pokemon = {
-            name: data.name,
-            height: data.height,
-            weight: data.weight,
+            name: pokemonNameCaps,
+            height: heightInCm,
+            weight: weightInKg,
+            types: types,
             image: data.sprites.other["official-artwork"].front_default,
             abilities: abilities,
-            sprites: defaultSprites
+            sprites: images
         }
 
         // console.log(pokemon)
@@ -135,9 +167,7 @@ const getAbility = async(ability) => {
         const effects = data.effect_entries
                     .filter(effectInfo => effectInfo.language.name === "en")
                     .map(effectInfo => effectInfo.effect)[0]
-
         
-
         const abilityInfo = {
             name: ability.name,
             effect: effects
