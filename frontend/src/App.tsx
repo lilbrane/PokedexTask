@@ -5,6 +5,7 @@ import Topbar from './Components/Topbar';
 import axios from 'axios';
 import PokemonInfo from './Components/PokemonInfo';
 import {PokemonObjt} from "./pokemonShortObj.js"
+import PokemonForm from './Components/PokemonForm';
 
 function App() {
   const [pokemon, setPokemon] = useState([]);
@@ -28,6 +29,7 @@ function App() {
     <div className="App bg-primaryWhite">
       <Topbar availablePokemon={pokemon} selectedPokemon={selectedPokemon} setSelectedPokemon={setSelectedPokemon}/>
       <PokemonInfo  selectedPokemon={selectedPokemon}/>
+      <PokemonForm />
     </div>
   );
 }

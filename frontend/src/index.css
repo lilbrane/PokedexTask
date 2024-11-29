@@ -23,3 +23,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.nonSelectable {
+  -webkit-user-drag: none;  /* For Safari */
+  user-drag: none;          /* For other browsers */
+  user-select: none;        /* Prevent selection */
+  pointer-events: none;     /* Optional: prevent interactions like click or hover */
+}

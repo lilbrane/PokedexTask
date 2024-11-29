@@ -92,7 +92,7 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
                 />
 
                 {isDropdownOpen && (
-                    <ul className='absolute bg-white rounded-b-lg rounded--lg max-h-40 overflow-y-auto w-80 ml-2 scrollbar-hide'>
+                    <ul className='absolute bg-white rounded-b-lg rounded--lg max-h-40 overflow-y-auto w-80 ml-2 scrollbar-hide z-10'>
                         {filteredPokemon.map((pokemon, index) => (
                             <li key={index} 
                                 onClick={() => pokemonSelect(pokemon)}

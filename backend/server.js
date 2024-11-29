@@ -128,11 +128,6 @@ app.get("/getPokemon/:name", async(req,res) => {
         const pokemonNameCaps = data.name.charAt(0).toUpperCase() + data.name.substring(1, data.name.length)
         // const weightInKg = data.weight;
 
-        
-        const images = [{
-            gen: "default",
-            sprite: data.sprites.other["official-artwork"].front_default
-        }, ...sprites];
 
         const pokemon = {
             name: pokemonNameCaps,
@@ -141,7 +136,7 @@ app.get("/getPokemon/:name", async(req,res) => {
             types: types,
             image: data.sprites.other["official-artwork"].front_default,
             abilities: abilities,
-            sprites: images
+            sprites: sprites
         }
 
         // console.log(pokemon)
