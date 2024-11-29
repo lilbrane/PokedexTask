@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Dropdown from './Dropdown'
 import { FaRandom } from "react-icons/fa";
-import {PokemonObjt, EmptyPokemon, NonPokemon} from "../pokemonShortObj"
+import {PokemonObjt, EmptyPokemon} from "../pokemonShortObj"
 
 
 interface TopbarParams {

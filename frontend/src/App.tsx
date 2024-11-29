@@ -15,7 +15,6 @@ function App() {
       try {
         const response = await axios.get("http://localhost:3001/getPokemon")
 
-        console.log(response.data.data)
         setPokemon(response.data.data);
       } catch (error) {
         console.error('Error fetching data:', error);
