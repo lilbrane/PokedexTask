@@ -39,12 +39,13 @@ app.get("/getPokemon", async(req,res) => {
                 }
             })
 
+            // const names = response.data.results.map((result) => result.name);
+
             pokemon.push(...response.data.results);
 
             currOffset += limit;
 
             if(response.data.results.length < limit) break
-            
         }
 
         
@@ -76,7 +77,7 @@ app.get("/getPokemon/:name", async(req,res) => {
 
         const sprites = [];
 
-//   // Iterating through generations
+   // Iterating through generations
         Object.entries(data.sprites.versions).forEach(([generation, versions]) => {
             const spriteInfo = {
                 gen: "",
@@ -127,7 +128,6 @@ app.get("/getPokemon/:name", async(req,res) => {
 
         const pokemonNameCaps = data.name.charAt(0).toUpperCase() + data.name.substring(1, data.name.length)
         // const weightInKg = data.weight;
-
 
         const pokemon = {
             name: pokemonNameCaps,

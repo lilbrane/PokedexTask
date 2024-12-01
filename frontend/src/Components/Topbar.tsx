@@ -18,7 +18,7 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
     const [filteredPokemon, setFilteredPokemon] = useState<PokemonObjt[]>([])
 
     const pokemonInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const input = e.target.value;
+        const input = e.target.value.toLowerCase();
         setTypedPokemon({name: input, url:""});
 
         if(input.trim() === ""){
@@ -27,7 +27,7 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
         }
         else{
             const matches = availablePokemon.filter((pokemon) => 
-                pokemon.name.includes(input)
+                pokemon.name.toLowerCase().includes(input)
             )
 
             console.log(matches)

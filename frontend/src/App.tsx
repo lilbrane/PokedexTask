@@ -17,6 +17,7 @@ function App() {
         const response = await axios.get("http://localhost:3001/getPokemon")
 
         setPokemon(response.data.data);
+        console.log(response.data.data)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -29,7 +30,7 @@ function App() {
     <div className="App bg-primaryWhite">
       <Topbar availablePokemon={pokemon} selectedPokemon={selectedPokemon} setSelectedPokemon={setSelectedPokemon}/>
       <PokemonInfo  selectedPokemon={selectedPokemon}/>
-      <PokemonForm />
+      <PokemonForm pokemonNames={pokemon}/>
     </div>
   );
 }

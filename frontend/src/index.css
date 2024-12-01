@@ -30,3 +30,7 @@ code {
   user-select: none;        /* Prevent selection */
   pointer-events: none;     /* Optional: prevent interactions like click or hover */
 }
+
+.userDiv{
+  box-shadow: 0 0 20px rgb(51, 37, 88)
+}

@@ -90,7 +90,7 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
                       <div className='absolute bottom-2 right-2 flex items-end'>
                         <IoCaretBackOutline onClick={prevImage} size={30} className='hover:scale-125 duration-200 transition-all'/>
                         <div>
-                          <div className='w-32 h-32 rounded-full border-2 border-primaryBlue p-2 flex justify-center items-center'>
+                          <div className='w-32 h-32 rounded-full border-2 border-primaryBlue p-2 flex justify-center items-center bg-primaryWhite'>
                             <img 
                               src={pokemonInfo.sprites[shownImageIdx].sprite && pokemonInfo.sprites[shownImageIdx].sprite} 
                               alt="Pokemon sprite" 
