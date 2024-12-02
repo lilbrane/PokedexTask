@@ -101,6 +101,7 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
               {pokemonInfo != EmptyPokemonLng ? (
                 <div className='p-8 grid grid-cols-8 '>
                   <div className='lg:flex md:col-span-4 col-span-8 relative'>
+
                     {/* weight and height */}
                     <div className="flex justify-between relative lg:w-1/4 md:items-center items-center">
                       <div className='flex lg:items-center sm:items-center text-3xl'>
@@ -173,15 +174,15 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
                               <p className='text-xl'>{pokemonInfo.name} abilities:</p>
                               { pokemonInfo.abilities &&
         
-                              <div className="h-[350px] overflow-hidden">
-                              <table className="w-full table-auto">
-                                <thead>
-                                  <tr>
-                                    <th className="px-4 py-2">Name</th>
-                                    <th className="px-4 py-2">Effect</th>
-                                  </tr>
-                                </thead>
-                              </table>
+                              <div className="max-h-[350px]  overflow-hidden">
+                                <table className="w-full table-auto">
+                                  <thead>
+                                    <tr>
+                                      <th className="px-4 py-2">Name</th>
+                                      <th className="px-4 py-2">Effect</th>
+                                    </tr>
+                                  </thead>
+                                </table>
                               
                               <div className="overflow-y-auto h-[calc(350px-36px)]">
                                 <table className="w-full table-auto">

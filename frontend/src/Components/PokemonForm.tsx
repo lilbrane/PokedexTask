@@ -283,16 +283,16 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
       {/* title */}
       <div className='col-span-7 flex items-center'>
         <div className='h-1 bg-primaryRed w-1/2'></div>
-        <p className='userDiv col-span-7 text-2xl my-8 w-fit mx-auto bg-primaryRed rounded-lg p-3 font-bold text-white'>Create your own pokemon</p>
+        <p className='userDiv col-span-7 lg:text-2xl md:text-xl sm:text-lg text-base my-8 w-fit mx-auto bg-primaryRed rounded-lg p-3 font-bold text-white'>Create your own pokemon</p>
         <div className='h-1 bg-primaryRed w-1/2'></div>
       </div>
 
-      <div className='col-span-7 relative'>
+      <div className='col-span-7'>
         <div className={`col-span-7 grid grid-cols-7 ${(isSaving || succesfulSave) ? "blur-md" : "blur-none"} transition-all duration-300`}>
-          <div className='col-span-3 '>
+          <div className='md:col-span-3 col-span-7 '>
 
             {/* pokemon image */}
-            <animated.div className={`w-96 h-96 rounded-full border-2 border-primaryBlue items-center flex  relative overflow-hidden mx-auto`}
+            <animated.div className={`lg:w-96 lg:h-96 md:w-72 md:h-72 sm:w-52 sm:h-52 w-40 h-40 rounded-full border-2 border-primaryBlue items-center flex  relative overflow-hidden mx-auto`}
               style={{clipPath: "circle(50% at 50% 50%)", ...fileAnimated}} // so that the onMouseEnter doesnt register outside the circle (where the square corners would be)
               
               onMouseEnter={() => setImageHovered(true)}
@@ -310,11 +310,12 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
             </animated.div>
           </div>
 
-          <div className='col-span-4 pr-20 items-center '>
+          <div className='md:col-span-4 col-span-7 md:pr-20 pr-10 pl-10 items-center '>
             <form onSubmit={handleSave} className="space-y-6">
-              <div className='flex space-x-2'>
+              <div className='md:flex block space-x-2'>
+
                 {/* pokemon Name Input */}
-                <div className="flex flex-col text-left w-3/5">
+                <div className="flex flex-col text-left md:w-3/5 w-full sm:space-y-2 md:space-y-0">
                   <label htmlFor="pokemonName" className="text-lg font-medium mb-2">Pokemon name</label>
                   <div className='relative w-full'>
                     <animated.input 
@@ -334,42 +335,43 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
                   <p className={`text-red-600 font-bold ml-1 ${visibleNameErr ? "opacity-100" : "opacity-0"} transition-all duration-300`}>{nameErr}</p>
                 </div>
 
-                {/* Pokemon weight */}
-                <div className="flex flex-col text-left w-1/5">
-                  <label htmlFor="pokemonWeight" className="text-lg font-medium mb-2 flex items-center">Weight <p className='text-gray-600 text-sm ml-2'>(kg)</p></label>
-                  <div className='relative w-full'>
-                    <animated.input 
-                      type="text" 
-                      id="pokemonWeight" 
-                      placeholder="e.g. 30" 
-                      className="border border-gray-300 rounded-lg p-2 text-lg focus:outline-none focus:ring-2 focus:ring-primaryBlue w-full"
-                      value={weight}
-                      onChange={(e) => onNumberInputChange(e, "weight")}
-                      style={weightAnimated}
-                    />
+                <div className='flex w-1/5 space-x-2'>
+                  {/* Pokemon weight */}
+                  <div className="flex flex-col text-left">
+                    <label htmlFor="pokemonWeight" className="text-lg font-medium mb-2 flex items-center">Weight <p className='text-gray-600 text-sm lg:ml-2 ml-1'>(kg)</p></label>
+                    <div className='relative w-full'>
+                      <animated.input 
+                        type="text" 
+                        id="pokemonWeight" 
+                        placeholder="e.g. 30" 
+                        className="border border-gray-300 rounded-lg p-2 text-lg focus:outline-none focus:ring-2 focus:ring-primaryBlue w-full"
+                        value={weight}
+                        onChange={(e) => onNumberInputChange(e, "weight")}
+                        style={weightAnimated}
+                      />
+                    </div>
+                    <p className={`text-red-600 font-bold ml-1 ${visibleWeightErr ? "opacity-100" : "opacity-0"} transition-all duration-300`}>{weightErr}</p>
                   </div>
-                  <p className={`text-red-600 font-bold ml-1 ${visibleWeightErr ? "opacity-100" : "opacity-0"} transition-all duration-300`}>{weightErr}</p>
-                </div>
 
-                {/* Pokemon height */}
-                <div className="flex flex-col text-left w-1/5">
-                  <label htmlFor="pokemonHeight" className="text-lg font-medium mb-2 flex items-center">Height <p className='text-gray-600 text-sm ml-2'>(cm)</p></label>
-                  <div className='relative w-full'>
-                    <animated.input 
-                      type="text" 
-                      id="pokemonHeight" 
-                      placeholder="e.g. 10" 
-                      className="border border-gray-300 rounded-lg p-2 text-lg focus:outline-none focus:ring-2 focus:ring-primaryBlue w-full"
-                      value={height}
-                      onChange={(e) => onNumberInputChange(e, "height")}
-                      style={heightAnimated}
-                    />
+                  {/* Pokemon height */}
+                  <div className="flex flex-col text-left">
+                    <label htmlFor="pokemonHeight" className="text-lg font-medium mb-2 flex items-center">Height <p className='text-gray-600 text-sm lg:ml-2 ml-1'>(cm)</p></label>
+                    <div className='relative w-full'>
+                      <animated.input 
+                        type="text" 
+                        id="pokemonHeight" 
+                        placeholder="e.g. 10" 
+                        className="border border-gray-300 rounded-lg p-2 text-lg focus:outline-none focus:ring-2 focus:ring-primaryBlue w-full"
+                        value={height}
+                        onChange={(e) => onNumberInputChange(e, "height")}
+                        style={heightAnimated}
+                      />
+                    </div>
+                    <p className={`text-red-600 font-bold ml-1 ${visibleHeightErr ? "opacity-100" : "opacity-0"} transition-all duration-300`}>{heightErr}</p>
                   </div>
-                  <p className={`text-red-600 font-bold ml-1 ${visibleHeightErr ? "opacity-100" : "opacity-0"} transition-all duration-300`}>{heightErr}</p>
                 </div>
               </div>
               
-
               {/* Pokemon descript Input */}
               <div className="flex flex-col text-left">
                 <label htmlFor="pokemonDescription" className="text-lg font-medium mb-2">Pokemon description:</label>
