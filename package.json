@@ -3,8 +3,11 @@
     "concurrently": "^9.1.0"
   },
   "scripts": {
+    "install": "concurrently \"npm run install:frontend\" \"npm run install:backend\"",
+    "install:frontend": "cd frontend && npm install",
+    "install:backend": "cd backend && npm install",
     "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
-    "start:frontend": "npm run start", 
-    "start:backend": "nodemon server.js" 
+    "start:frontend": "cd frontend && npm run start", 
+    "start:backend": "nodemon backend/server.js" 
   }
 }
