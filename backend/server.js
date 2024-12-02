@@ -1,8 +1,13 @@
 import express from "express"
 import cors from "cors"
 import axios from "axios"
+import multer from "multer";
+import fs from "fs";
 
 const app = express();
+
+const apiKey = "b822f568ec35a1d5cc873607dfa4c40f";
+const upload = multer({ dest: 'uploads/' });
 
 app.use(cors({
     origin: "http://localhost:3000",
@@ -68,6 +73,8 @@ app.get("/getPokemon/:name", async(req,res) => {
 
         const { data } = response;
 
+        console.log(data)
+
         // get front_default sprites of all generations
         const defaultSprites = [];
         Object.keys(data.sprites.other).forEach(source => {
@@ -77,7 +84,7 @@ app.get("/getPokemon/:name", async(req,res) => {
 
         const sprites = [];
 
-   // Iterating through generations
+        // Iterating through generations
         Object.entries(data.sprites.versions).forEach(([generation, versions]) => {
             const spriteInfo = {
                 gen: "",
@@ -152,6 +159,8 @@ app.get("/getPokemon/:name", async(req,res) => {
 })
 
 
+
+
 const getAbility = async(ability) => {
 
     try {
@@ -176,6 +185,40 @@ const getAbility = async(ability) => {
         return { error: errorMsg, abilityInfo: null }
     }
 }
+
+
+app.post("/image", upload.single("image"), async(req, res) => {
+    const imageFile = req.file;
+    console.log(imageFile)
+
+    if (!imageFile)
+        return res.status(400).json({ error: "No image file provided" });
+
+    try {
+        const imageBase64 = fs.readFileSync(imageFile.path, { encoding: "base64" });
+
+        // Prepare the FormData
+        const formData = new FormData();
+        formData.set("key", apiKey); // Replace with your API key
+        formData.append("image", imageBase64);
+
+
+        const response = await axios.post("https://api.imgbb.com/1/upload", formData, {
+    
+        });
+        
+
+        // Clean up uploaded file (optional)
+        fs.unlinkSync(imageFile.path);
+
+        res.status(200).json({ success: true, data: response.data }) 
+    } catch (err) {
+        const errorMsg = err.message;
+        console.error(errorMsg)
+
+        res.status(500).json({ success: false, message: `Server ERROR - ${err.message}` }) 
+    }
+})
 
 
 

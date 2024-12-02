@@ -19,7 +19,7 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
 
     const pokemonInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const input = e.target.value.toLowerCase();
-        setTypedPokemon({name: input, url:""});
+        setTypedPokemon({name: input, url:"", official: true});
 
         if(input.trim() === ""){
             setFilteredPokemon([]);
@@ -30,7 +30,6 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
                 pokemon.name.toLowerCase().includes(input)
             )
 
-            console.log(matches)
 
             if(matches.length === 1)
                 setSimilarPokemonName(matches[0])
@@ -38,11 +37,11 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
                 if(matches[0].name === input)
                     setSimilarPokemonName(matches[0])
                 else
-                    setSimilarPokemonName({name: input, url: ""})
+                    setSimilarPokemonName({name: input, url: "", official: true})
 
             }
             else
-                setSimilarPokemonName({name: input, url: ""})
+                setSimilarPokemonName({name: input, url: "", official: true})
 
             setFilteredPokemon(matches);
             setIsDropdownOpen(matches.length > 0);
@@ -58,7 +57,6 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
 
     const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(similarPokemonName)
         if(similarPokemonName.url != ""){
             setTypedPokemon(similarPokemonName)
         }

@@ -1,6 +1,7 @@
 export interface PokemonObjt {
     name: string,
-    url: string
+    url: string,
+    official: boolean
   }
 
   export interface PokemonObjtLong {
@@ -13,6 +14,7 @@ export interface PokemonObjt {
       name: string,
       effect: string
     }]
+    description: string
     sprites: [{
       gen: string,
       type: string,
@@ -22,7 +24,8 @@ export interface PokemonObjt {
  
   export const EmptyPokemon: PokemonObjt = {
     name: "",
-    url: ""
+    url: "",
+    official: true
   };
 
   export const EmptyPokemonLng: PokemonObjtLong = {
@@ -35,6 +38,7 @@ export interface PokemonObjt {
       name: "",
       effect: ""
     }],
+    description: "",
     sprites: [{
       gen: "",
       type: "",

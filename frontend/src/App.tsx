@@ -4,20 +4,33 @@ import Home from './Components/Home';
 import Topbar from './Components/Topbar';
 import axios from 'axios';
 import PokemonInfo from './Components/PokemonInfo';
-import {PokemonObjt} from "./pokemonShortObj.js"
+import {EmptyPokemon, PokemonObjt} from "./pokemonShortObj"
 import PokemonForm from './Components/PokemonForm';
 
 function App() {
-  const [pokemon, setPokemon] = useState([]);
-  const [selectedPokemon, setSelectedPokemon] = useState<PokemonObjt>({name: "", url: ""});
+  const [pokemon, setPokemon] = useState<PokemonObjt[]>([]);
+  const [selectedPokemon, setSelectedPokemon] = useState<PokemonObjt>(EmptyPokemon);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get("http://localhost:3001/getPokemon")
+        
+        const updatedData = response.data.data.map((pokemon: PokemonObjt) => ({
+          ...pokemon, 
+          official: true,
+        }));
 
-        setPokemon(response.data.data);
-        console.log(response.data.data)
+        let savedPokemon: any[] = [];
+
+        // getting pokemon from localstorage
+        const localStoragePoke = localStorage.getItem("pokemons");
+        if(localStoragePoke)
+          savedPokemon = JSON.parse(localStoragePoke);
+
+
+
+        setPokemon([...updatedData, ...savedPokemon]);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -30,7 +43,7 @@ function App() {
     <div className="App bg-primaryWhite">
       <Topbar availablePokemon={pokemon} selectedPokemon={selectedPokemon} setSelectedPokemon={setSelectedPokemon}/>
       <PokemonInfo  selectedPokemon={selectedPokemon}/>
-      <PokemonForm pokemonNames={pokemon}/>
+      <PokemonForm pokemonNames={pokemon} setPokemonNames={setPokemon}/>
     </div>
   );
 }
