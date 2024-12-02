@@ -335,7 +335,7 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
                   <p className={`text-red-600 font-bold ml-1 ${visibleNameErr ? "opacity-100" : "opacity-0"} transition-all duration-300`}>{nameErr}</p>
                 </div>
 
-                <div className='flex w-1/5 space-x-2'>
+                <div className='flex w-2/5 space-x-2'>
                   {/* Pokemon weight */}
                   <div className="flex flex-col text-left">
                     <label htmlFor="pokemonWeight" className="text-lg font-medium mb-2 flex items-center">Weight <p className='text-gray-600 text-sm lg:ml-2 ml-1'>(kg)</p></label>

@@ -115,7 +115,7 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
                       {/* image and sprites */}
                       <div className=' lg:mt-12 pt-2 md:flex '>
                         {/* big img */}
-                        <div className='xl:w-96 xl:h-96 md:w-80 md:h-80 sm:w-60 sm:h-60 w-40 h-40 sm:mx-auto ml-2  rounded-full border-2 border-primaryBlue p-8 nonSelectable overflow-hidden items-center flex'>
+                        <div className='xl:w-96 xl:h-96 md:w-80 md:h-80 sm:w-60 sm:h-60 w-40 h-40 sm:mx-auto ml-2 rounded-full border-2 border-primaryBlue p-8 nonSelectable overflow-hidden items-center flex'>
                           <img src={pokemonInfo.image} alt="Pokemon Artwork " className='object-scale-down'/>
                         </div>
 
