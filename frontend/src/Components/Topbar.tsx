@@ -83,6 +83,7 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
         }
 
         setIsDropdownOpen(false);
+        console.log(similarPokemonName)
         setSelectedPokemon(similarPokemonName)
     }
 
@@ -129,10 +130,10 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
             
 
         </div>
-        <div className='flex w-1/4 items-center'>
+        <div className='flex w-1/4 items-center md:text-base text-sm'>
             <button 
             onClick={choseRandomPokemon}
-            className='flex items-center mx-auto border-2 p-2 rounded-md border-primaryBlue hover:scale-105 transition-all duration-200 bg-primaryBlue text-primaryWhite space-x-2'>
+            className='flex items-center mx-auto p-2 rounded-md  hover:scale-105 transition-all duration-200 bg-primaryBlue text-primaryWhite space-x-2'>
                 <p>Random</p>
                 <FaRandom />
             </button>

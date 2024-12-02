@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { EmptyPokemonLng, PokemonObjt, PokemonObjtLong } from '../pokemonShortObj'
 import axios from 'axios';
-import TextInLogo from './TextInLogo';
 import { IoCaretForwardOutline, IoCaretBackOutline  } from "react-icons/io5";
+import TextInLogo from './TextInLogo';
 
 interface PokemonInfoParams{
     selectedPokemon: PokemonObjt
@@ -16,7 +16,6 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     useEffect(() => {
-      console.log(selectedPokemon)
         if (selectedPokemon.url !== "" && selectedPokemon.official) {
           setPokemonInfo(EmptyPokemonLng)
             const fetchData = async () => {
@@ -44,7 +43,6 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
 
         // if selected pokemon is one of the created ones
         else if(!selectedPokemon.official){
-
           const localStoragePoke = localStorage.getItem("pokemons");
           if(localStoragePoke){
             const savedPokemon = JSON.parse(localStoragePoke);
@@ -70,7 +68,7 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
         else{
             setShowPokemonData(false)
         }
-        }, [selectedPokemon.url]);  
+        }, [selectedPokemon.name]);  
 
     const nextImage = () => {
       console.log(pokemonInfo.sprites.length, shownImageIdx)

@@ -287,7 +287,7 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
         <div className='h-1 bg-primaryRed w-1/2'></div>
       </div>
 
-      <div className='col-span-7'>
+      <div className='col-span-7 relative'>
         <div className={`col-span-7 grid grid-cols-7 ${(isSaving || succesfulSave) ? "blur-md" : "blur-none"} transition-all duration-300`}>
           <div className='md:col-span-3 col-span-7 '>
 
@@ -311,11 +311,11 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
           </div>
 
           <div className='md:col-span-4 col-span-7 md:pr-20 pr-10 pl-10 items-center '>
-            <form onSubmit={handleSave} className="space-y-6">
-              <div className='md:flex block space-x-2'>
+            <form onSubmit={handleSave} className="space-y-6 w-full ">
+              <div className='lg:flex block space-x-2 w-full'>
 
                 {/* pokemon Name Input */}
-                <div className="flex flex-col text-left md:w-3/5 w-full sm:space-y-2 md:space-y-0">
+                <div className="flex flex-col text-left lg:w-3/5 w-full sm:space-y-2 md:space-y-0">
                   <label htmlFor="pokemonName" className="text-lg font-medium mb-2">Pokemon name</label>
                   <div className='relative w-full'>
                     <animated.input 
@@ -335,7 +335,7 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
                   <p className={`text-red-600 font-bold ml-1 ${visibleNameErr ? "opacity-100" : "opacity-0"} transition-all duration-300`}>{nameErr}</p>
                 </div>
 
-                <div className='flex w-2/5 space-x-2'>
+                <div className='flex lg:w-2/5 w-full space-x-2'>
                   {/* Pokemon weight */}
                   <div className="flex flex-col text-left">
                     <label htmlFor="pokemonWeight" className="text-lg font-medium mb-2 flex items-center">Weight <p className='text-gray-600 text-sm lg:ml-2 ml-1'>(kg)</p></label>
@@ -420,21 +420,11 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
                 <FaCheck color='green' size={30} />
               </div>
               }
-              
-
             </div>
-
           </div>
         }
         
       </div>
-        
-
-        
-        {/* {isSaving && 
-        <div className='absolute '>pokemon is saving</div>
-        } */}
-      
     </div>
   )
 }

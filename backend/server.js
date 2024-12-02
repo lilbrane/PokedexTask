@@ -202,7 +202,6 @@ app.post("/image", upload.single("image"), async(req, res) => {
         const response = await axios.post("https://api.imgbb.com/1/upload", formData, {
     
         });
-        
 
         // Clean up uploaded file (optional)
         fs.unlinkSync(imageFile.path);
@@ -213,6 +212,19 @@ app.post("/image", upload.single("image"), async(req, res) => {
         console.error(errorMsg)
 
         res.status(500).json({ success: false, message: `Server ERROR - ${err.message}` }) 
+    }
+})
+
+app.get("/types", async(req,res) => {
+
+    try {
+        const response = await axios.get("https://pokeapi.co/api/v2/type/")
+
+        res.status(200).json({ success: true, data: response.data }) 
+    } catch (err) {
+        const errorMsg = err.message;
+        console.error(errorMsg)
+        res.status(500).json({ success: false, message: `Server ERROR - ${errorMsg}` }) 
     }
 })
 
