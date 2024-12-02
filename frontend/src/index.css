@@ -48,3 +48,15 @@ code {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.arrowIcons {
+  user-select: none;
+  transition-duration: 200ms;
+  transition: all;
+  cursor: pointer;  
+}
+
+.arrowIcons:hover{
+  transform: scale(1.25);
+  transition: transform 0.2s ease;
+}

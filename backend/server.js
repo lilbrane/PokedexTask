@@ -104,18 +104,13 @@ app.get("/getPokemon/:name", async(req,res) => {
         });
 
         
-        // getting the abilities
-        let abilities = await Promise.all(
-            data.abilities.map(async(ability) => {
-                const {error, abilityInfo} = await getAbility(ability.ability)
-                console.log(abilityInfo)
-                return abilityInfo
-            })
-        )
-
+        
+        // let abilities = data.abilities;
+        // console.log(abilities)
         // pokemon types
         let types = data.types.map(type => type.type.name)
 
+        let abilities = []
         for (const ability of data.abilities) {
             try {
                 const { error, abilityInfo } = await getAbility(ability.ability);

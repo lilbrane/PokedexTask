@@ -173,7 +173,7 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
                               <p className='text-xl'>{pokemonInfo.name} abilities:</p>
                               { pokemonInfo.abilities &&
         
-                              <div className="h-[350px] overflow-hidden">
+                              <div className="h-[250px] overflow-hidden">
                               <table className="w-full table-auto">
                                 <thead>
                                   <tr>
@@ -183,7 +183,7 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
                                 </thead>
                               </table>
                               
-                              <div className="overflow-y-auto h-[calc(350px-36px)]">
+                              <div className="overflow-y-auto h-[calc(250px-36px)]">
                                 <table className="w-full table-auto">
                                   <tbody>
                                     {pokemonInfo.abilities.map((ability, index) => (
@@ -193,10 +193,10 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
                                     >
                                         <td className="px-4 py-2">{ability.name}</td>
                                         <td className="px-4 py-2">
-                                          {hoveredIndex === index
-                                              ? ability.effect // Show full effect if this row is hovered
-                                              : ability.effect?.substring(0, 100) + '...'} {/* Truncate for non-hovered rows */}
-                                        </td>
+                                        {hoveredIndex === index
+                                                ? ability.effect // Show full effect if this row is hovered
+                                                : ability.effect?.substring(0, 100) + '...'} {/* Truncate for non-hovered rows */}
+                                          </td>
                                       </tr>
                                     ))}
                                   </tbody>
