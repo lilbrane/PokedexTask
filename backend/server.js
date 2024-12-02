@@ -73,7 +73,6 @@ app.get("/getPokemon/:name", async(req,res) => {
 
         const { data } = response;
 
-        console.log(data)
 
         // get front_default sprites of all generations
         const defaultSprites = [];
@@ -104,10 +103,12 @@ app.get("/getPokemon/:name", async(req,res) => {
                 sprites.push(spriteInfo)
         });
 
+        
         // getting the abilities
         let abilities = await Promise.all(
             data.abilities.map(async(ability) => {
                 const {error, abilityInfo} = await getAbility(ability.ability)
+                console.log(abilityInfo)
                 return abilityInfo
             })
         )

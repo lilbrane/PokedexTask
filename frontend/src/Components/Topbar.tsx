@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Dropdown from './Dropdown'
 import { FaRandom } from "react-icons/fa";
 import {PokemonObjt, EmptyPokemon} from "../pokemonShortObj"
@@ -17,6 +17,25 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [filteredPokemon, setFilteredPokemon] = useState<PokemonObjt[]>([])
 
+    const dropdownRef = useRef<HTMLUListElement | null>(null);
+
+    const handleClickOutside = (e: MouseEvent) => {
+        // Close dropdown if click is outside the dropdown
+        if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+          setIsDropdownOpen(false);
+        }
+      };
+
+    useEffect(() => {
+    // Attach event listener to document
+    document.addEventListener('click', handleClickOutside);
+
+    // Cleanup event listener on component unmount
+    return () => {
+        document.removeEventListener('click', handleClickOutside);
+    };
+    }, []);
+
     const pokemonInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const input = e.target.value.toLowerCase();
         setTypedPokemon({name: input, url:"", official: true});
@@ -30,14 +49,16 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
                 pokemon.name.toLowerCase().includes(input)
             )
 
-
             if(matches.length === 1)
                 setSimilarPokemonName(matches[0])
             else if(matches.length > 1){
-                if(matches[0].name === input)
-                    setSimilarPokemonName(matches[0])
-                else
-                    setSimilarPokemonName({name: input, url: "", official: true})
+                const match = matches.find(pokemon => pokemon.name === input);
+
+                if (match) {
+                  setSimilarPokemonName(match);
+                } else {
+                  setSimilarPokemonName({ name: input, url: "", official: true });
+                }
 
             }
             else
@@ -61,6 +82,7 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
             setTypedPokemon(similarPokemonName)
         }
 
+        setIsDropdownOpen(false);
         setSelectedPokemon(similarPokemonName)
     }
 
@@ -90,7 +112,10 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
                 />
 
                 {isDropdownOpen && (
-                    <ul className='absolute bg-white rounded-b-lg rounded--lg max-h-40 overflow-y-auto w-80 ml-2 scrollbar-hide z-10'>
+                    <ul className='absolute bg-white rounded-b-lg rounded--lg max-h-40 overflow-y-auto w-80 ml-2 scrollbar-hide z-10'
+                    ref={dropdownRef}
+
+                    >
                         {filteredPokemon.map((pokemon, index) => (
                             <li key={index} 
                                 onClick={() => pokemonSelect(pokemon)}

@@ -12,7 +12,8 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
     const [pokemonInfo, setPokemonInfo] = useState<PokemonObjtLong>(EmptyPokemonLng);
     const [showPokemonData, setShowPokemonData] = useState(pokemonInfo.name !== "");
     const [shownImageIdx, setShownImageIdx] = useState(0);
-    const [pokemonIsOfficial, setPokemonIsOfficial] = useState(false)
+    const [pokemonIsOfficial, setPokemonIsOfficial] = useState(false);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     useEffect(() => {
       console.log(selectedPokemon)
@@ -172,7 +173,7 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
                               <p className='text-xl'>{pokemonInfo.name} abilities:</p>
                               { pokemonInfo.abilities &&
         
-                              <div className="h-[250px] overflow-hidden">
+                              <div className="h-[350px] overflow-hidden">
                               <table className="w-full table-auto">
                                 <thead>
                                   <tr>
@@ -182,14 +183,19 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
                                 </thead>
                               </table>
                               
-                              <div className="overflow-y-auto h-[calc(250px-36px)]">
+                              <div className="overflow-y-auto h-[calc(350px-36px)]">
                                 <table className="w-full table-auto">
                                   <tbody>
                                     {pokemonInfo.abilities.map((ability, index) => (
-                                      <tr key={index} className="hover:bg-primaryBlue hover:bg-opacity-35 border-b-2 border-primaryBlue">
+                                      <tr key={index} className="hover:bg-primaryBlue hover:bg-opacity-35 border-b-2 border-primaryBlue" 
+                                      onMouseEnter={() => setHoveredIndex(index)}  // Mouse enters
+                                      onMouseLeave={() => setHoveredIndex(null)}  // Mouse leaves
+                                    >
                                         <td className="px-4 py-2">{ability.name}</td>
                                         <td className="px-4 py-2">
-                                          {ability.effect && ability.effect.substring(0, 100)}...
+                                          {hoveredIndex === index
+                                              ? ability.effect // Show full effect if this row is hovered
+                                              : ability.effect?.substring(0, 100) + '...'} {/* Truncate for non-hovered rows */}
                                         </td>
                                       </tr>
                                     ))}
