@@ -36,31 +36,36 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
     };
     }, []);
 
+    // on input change
     const pokemonInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const input = e.target.value.toLowerCase();
         setTypedPokemon({name: input, url:"", official: true});
 
+        // if empty with trimmed whitespaces
         if(input.trim() === ""){
             setFilteredPokemon([]);
             setIsDropdownOpen(false);
         }
         else{
+            // get matches by going through all pokemon and if it includes our current input 
             const matches = availablePokemon.filter((pokemon) => 
                 pokemon.name.toLowerCase().includes(input)
             )
 
+            // if only one similar match, set it to most similar pokemon so if user searches it it auto fills it
             if(matches.length === 1)
                 setSimilarPokemonName(matches[0])
+
+            // if matches are more then one, check if exact match and set that as similar
             else if(matches.length > 1){
                 const match = matches.find(pokemon => pokemon.name === input);
 
-                if (match) {
+                if (match)
                   setSimilarPokemonName(match);
-                } else {
+                else
                   setSimilarPokemonName({ name: input, url: "", official: true });
-                }
-
             }
+            // if no matches set the name but not url so that pokemonInfo component gets a name but returns that no pokemon with that name exist
             else
                 setSimilarPokemonName({name: input, url: "", official: true})
 
@@ -83,7 +88,6 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
         }
 
         setIsDropdownOpen(false);
-        console.log(similarPokemonName)
         setSelectedPokemon(similarPokemonName)
     }
 

@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react'
-import noImageSelected from "../imageNotSelected2.png"
+import React, { useEffect, useRef, useState } from 'react'
+import noImageSelected from "../assets/imageNotSelected.png"
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { PokemonObjt } from '../pokemonShortObj';
 import { useShakeLtoR, useHideAfterSeconds } from '../anim';
@@ -7,6 +7,9 @@ import { animated } from 'react-spring';
 import axios from 'axios';
 import Loader from './Loader';
 import { FaCheck } from "react-icons/fa";
+import Dropdown from './Dropdown';
+import { IoMdCloseCircle } from "react-icons/io";
+import { useInput } from "../hooks/useInput"
 
 interface PokemonFormProps{
   pokemonNames: PokemonObjt[];
@@ -19,71 +22,70 @@ const maxWeight = 1000;
 const maxHeight = 10000;
 
 const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}) => {
-  // name variables
-  const [name, setName] = useState("");
-  const [nameErr, setNameErr] = useState("");
-  const [animateNameInput, setAnimateNameInput] = useState(false);
-  const nameAnimated = useShakeLtoR(animateNameInput, setAnimateNameInput);
-  const [visibleNameErr, setVisibleNameErr] = useState(false);
-  const hideNameErrAfterSeconds = useHideAfterSeconds(setVisibleNameErr);
+  const [pokemonTypes, setPokemonTypes] = useState<string[]>([]);
+  const [availablePokemonTypes, setAvailablePokemonTypes] = useState([]);
 
-  // description variables
-  const [description, setDescription] = useState("");
-  const [descriptionErr, setDescriptionErr] = useState("");
-  const [animateDescInput, setAnimateDescInput] = useState(false);
-  const descAnimated = useShakeLtoR(animateDescInput, setAnimateDescInput);
-  const [visibleDescErr, setVisibleDescErr] = useState(false);
-  const hideDescErrAfterSeconds = useHideAfterSeconds(setVisibleDescErr);
+  // basic variables
+  const name = useInput();
+  const description = useInput();
+  const height = useInput();
+  const weight = useInput();
 
   // image variables
   const [image, setImage] = useState<File | null>(null);
-
   const [imageHovered, setImageHovered] = useState(false);
   const [animateFile, setAnimateFile] = useState(false);
   const fileAnimated = useShakeLtoR(animateFile, setAnimateFile);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // height variables
-  const [height, setHeight] = useState("");
-  const [heightErr, setHeightErr] = useState("");
-  const [animateHeightInput, setAnimateHeightInput] = useState(false);
-  const heightAnimated = useShakeLtoR(animateHeightInput, setAnimateHeightInput);
-  const [visibleHeightErr, setVisibleHeightErr] = useState(false);
-  const hideHeightErrAfterSeconds = useHideAfterSeconds(setVisibleHeightErr);
-
-  // weight variables
-  const [weight, setWeight] = useState("");
-  const [weightErr, setWeightErr] = useState("");
-  const [animateWeightInput, setAnimateWeightInput] = useState(false);
-  const weightAnimated = useShakeLtoR(animateWeightInput, setAnimateWeightInput);
-  const [visibleWeightErr, setVisibleWeightErr] = useState(false);
-  const hideWeightErrAfterSeconds = useHideAfterSeconds(setVisibleWeightErr);
-
+  // loader variables
   const [isSaving, setIsSaving] = useState(false); // for pokemon saving loader
   const [succesfulSave, setSuccesfulSave] = useState(false);
   const hideSuccessMsgAfterSeconds = useHideAfterSeconds(setSuccesfulSave);
 
-  // show and hide error
+  // dropdown type selection
+  const handleSelection = (type: string) => {
+    if(!pokemonTypes.includes(type))
+      setPokemonTypes([...pokemonTypes, type])
+  };
+
+  // show and hide errors
   const showDescError = () => {
-    setVisibleDescErr(true); 
-    hideDescErrAfterSeconds(3);
+    description.setVisibleError(true); 
+    description.hideErrorAfterSeconds(3);
   };
 
   const showNameError = () => {
-    setVisibleNameErr(true); 
-    hideNameErrAfterSeconds(3);
+    name.setVisibleError(true); 
+    name.hideErrorAfterSeconds(3);
   };
 
   const showWeightError = () => {
-    setVisibleWeightErr(true); 
-    hideWeightErrAfterSeconds(3);
+    weight.setVisibleError(true); 
+    weight.hideErrorAfterSeconds(3);
   };
 
   const showHeightError = () => {
-    setVisibleHeightErr(true); 
-    hideHeightErrAfterSeconds(3);
+    height.setVisibleError(true); 
+    height.hideErrorAfterSeconds(3);
   };
+
+
+  // getting all types of pokemon from server
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios('http://localhost:3001/types');
+
+        setAvailablePokemonTypes(response.data.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
 
 
   // on name input change check length and if its  only letters 
@@ -91,7 +93,7 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
     const input = e.target.value;
 
     if (input.length <= nameMaxLenght && /^[A-Za-z]*$/.test(input) || input === "")
-      setName(input)
+      name.setValue(input)
   }
 
   // checkc desc length
@@ -99,7 +101,7 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
     const input = e.target.value;
 
     if(input.length <= descriptionMaxLength)
-      setDescription(input);
+      description.setValue(input);
   }
 
   // accept only numbers
@@ -108,10 +110,10 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
 
     if (/^[0-9]*$/.test(input) || input === ""){
       if(type === "height"){
-        setHeight(input)
+        height.setValue(input)
       }
       else
-        setWeight(input)
+        weight.setValue(input)
     }
   }
 
@@ -121,13 +123,11 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
       fileInputRef.current.click(); 
   }
 
+  // setting file logic, check type and size
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
-
     if(file){
-      console.log(file.size / (1024 * 1024))
-
       const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg"];
 
       if (!allowedTypes.includes(file.type)) {
@@ -143,80 +143,85 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
     }
   }
 
+  const removeType = (selectedType: string) => {
+    setPokemonTypes((prevTypes) => prevTypes.filter((type) => type !== selectedType));
+  }
+
   // on form save check if anyerrors and save in not
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let nameFieldErr, descFieldErr, weightFieldErr, heightFieldErr = false;
 
-     // check name 
-     if (pokemonNames.some(pokemon => pokemon.name.toLowerCase() === name.toLowerCase())) {
-      setNameErr(`Pokemon with name \"${name}\" already exists`);
+     // check name if blank and if pokemon with name already exists
+     if (pokemonNames.some(pokemon => pokemon.name.toLowerCase() === name.value.toLowerCase())) {
+      name.setError(`Pokemon with name \"${name}\" already exists`);
       nameFieldErr = true;
     }
-    else if(name === ""){
-      setNameErr("Pokemon name can't be blank");
+    else if(name.value === ""){
+      name.setError("Pokemon name can't be blank");
       nameFieldErr = true
     }
     else{
-      setNameErr("");
+      name.setError("");
     }
 
     // description
-    if(description === ""){
-      setDescriptionErr("Description can't be blank");
+    if(description.value === ""){
+      description.setError("Description can't be blank");
       descFieldErr = true
     }
-    else setDescriptionErr("")
+    else description.setError("")
 
     // weight
-    if(parseInt(weight, 10) > maxWeight){
-      setWeightErr(`Weight must be less then ${maxWeight} kg`)
+    if(parseInt(weight.value, 10) > maxWeight){
+      weight.setError(`Weight must be less then ${maxWeight} kg`)
       weightFieldErr = true;
     }
-    else if(weight === ""){
-      setWeightErr(`Height can't be blank`)
+    else if(weight.value === ""){
+      weight.setError(`Height can't be blank`)
       weightFieldErr = true;
     }
-    else setWeightErr("")
+    else weight.setError("")
 
     // height
-    if(parseInt(height, 10) > maxHeight){
-      setHeightErr(`Height must be less then ${maxHeight} cm`)
+    if(parseInt(height.value, 10) > maxHeight){
+      height.setError(`Height must be less then ${maxHeight} cm`)
       heightFieldErr = true;
     }
-    else if(height === ""){
-      setHeightErr(`Height can't be blank`)
+    else if(height.value === ""){
+      height.setError(`Height can't be blank`)
       heightFieldErr = true;
     }
-    else setHeightErr("")
-
+    else height.setError("")
 
     if(nameFieldErr || descFieldErr || weightFieldErr || heightFieldErr || !image) {
       if(nameFieldErr){
         showNameError();
-        setAnimateNameInput(true);
+        name.setAnimateInput(true);
       }
       if(descFieldErr){
         showDescError();
-        setAnimateDescInput(true);
+        description.setAnimateInput(true);
       }
       if(weightFieldErr){
         showWeightError();
-        setAnimateWeightInput(true);
+        weight.setAnimateInput(true);
       }
       if(heightFieldErr){
         showHeightError();
-        setAnimateHeightInput(true);
+        height.setAnimateInput(true);
       }
       if(!image) setAnimateFile(true)
 
       return
     }
 
+    // set saving so that loader is shown
     setIsSaving(true);
     uploadImageToServer();
   }
 
+  // upload image in backend 
   const uploadImageToServer = async() => {
     const formData = new FormData();
     if(image)
@@ -224,7 +229,6 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
     else 
       return
     
-      console.log(formData)
     try {
       const response = await axios.post("http://localhost:3001/image", formData, {
         headers: {
@@ -232,33 +236,41 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
         },
       });
 
+      // if no type is selected, set it to normal
+      let pokemonTypesToSave = pokemonTypes;
+      if(pokemonTypesToSave.length === 0)
+        pokemonTypesToSave = ["normal"]
+
       const imageUrl = response.data.data.data.url
       const newPokemon = {
-        name,
-        description,
-        weight,
-        height,
+        name: name.value,
+        description: description.value,
+        weight: weight.value,
+        height: height.value,
+        types: pokemonTypesToSave,
         imageUrl
       }
 
       savePokemon(newPokemon)
-      setPokemonNames([...pokemonNames, { name: name, url: "custom", official: false }]);
+      setPokemonNames([...pokemonNames, { name: name.value, url: "custom", official: false }]);
       
-      console.log("Image uploaded successfully:", imageUrl);
     } catch (err) {
       console.error("Failed to upload image:", err);
       alert(`Error: ${err}`);
     }
+
+    // after saving image, updating localhost and updating the array of available pokemons to search reset form and change loader to success msg
     finally{
       setIsSaving(false);
       setSuccesfulSave(true)
       hideSuccessMsgAfterSeconds(2);
 
       setImage(null);
-      setName("");
-      setDescription("");
-      setWeight("");
-      setHeight("");
+      name.setValue("");
+      description.setValue("");
+      height.setValue("");
+      weight.setValue("");
+      setPokemonTypes([])
     }
   };
 
@@ -283,7 +295,7 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
       {/* title */}
       <div className='col-span-7 flex items-center'>
         <div className='h-1 bg-primaryRed w-1/2'></div>
-        <p className='userDiv col-span-7 lg:text-2xl md:text-xl sm:text-lg text-base my-8 w-fit mx-auto bg-primaryRed rounded-lg p-3 font-bold text-white'>Create your own pokemon</p>
+        <p className='userDiv col-span-7 lg:text-xl md:text-lg sm:text-base text-base my-8 w-fit mx-auto bg-primaryRed rounded-lg p-3 font-bold text-white'>Create your own pokemon</p>
         <div className='h-1 bg-primaryRed w-1/2'></div>
       </div>
 
@@ -323,16 +335,16 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
                       id="pokemonName" 
                       placeholder="e.g. Electrios" 
                       className="border border-gray-300 rounded-lg p-2 text-lg focus:outline-none focus:ring-2 focus:ring-primaryBlue w-full"
-                      value={name}
+                      value={name.value}
                       onChange={onNameChange}
-                      style={nameAnimated}
+                      style={name.animated}
                     />
-                    <animated.div className="absolute w-fit bottom-2 right-2" style={nameAnimated}>
-                      {name.length}/{nameMaxLenght}
+                    <animated.div className="absolute w-fit bottom-2 right-2" style={name.animated}>
+                      {name.value.length}/{nameMaxLenght}
                     </animated.div>
                   </div>
 
-                  <p className={`text-red-600 font-bold ml-1 ${visibleNameErr ? "opacity-100" : "opacity-0"} transition-all duration-300`}>{nameErr}</p>
+                  <p className={`text-red-600 font-bold ml-1 ${name.visibleError ? "opacity-100" : "opacity-0"} transition-all duration-300`}>{name.error}</p>
                 </div>
 
                 <div className='flex lg:w-2/5 w-full space-x-2'>
@@ -345,12 +357,12 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
                         id="pokemonWeight" 
                         placeholder="e.g. 30" 
                         className="border border-gray-300 rounded-lg p-2 text-lg focus:outline-none focus:ring-2 focus:ring-primaryBlue w-full"
-                        value={weight}
+                        value={weight.value}
                         onChange={(e) => onNumberInputChange(e, "weight")}
-                        style={weightAnimated}
+                        style={weight.animated}
                       />
                     </div>
-                    <p className={`text-red-600 font-bold ml-1 ${visibleWeightErr ? "opacity-100" : "opacity-0"} transition-all duration-300`}>{weightErr}</p>
+                    <p className={`text-red-600 font-bold ml-1 ${weight.visibleError ? "opacity-100" : "opacity-0"} transition-all duration-300`}>{weight.error}</p>
                   </div>
 
                   {/* Pokemon height */}
@@ -362,13 +374,35 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
                         id="pokemonHeight" 
                         placeholder="e.g. 10" 
                         className="border border-gray-300 rounded-lg p-2 text-lg focus:outline-none focus:ring-2 focus:ring-primaryBlue w-full"
-                        value={height}
+                        value={height.value}
                         onChange={(e) => onNumberInputChange(e, "height")}
-                        style={heightAnimated}
+                        style={height.animated}
                       />
                     </div>
-                    <p className={`text-red-600 font-bold ml-1 ${visibleHeightErr ? "opacity-100" : "opacity-0"} transition-all duration-300`}>{heightErr}</p>
+                    <p className={`text-red-600 font-bold ml-1 ${height.visibleError ? "opacity-100" : "opacity-0"} transition-all duration-300`}>{height.error}</p>
                   </div>
+                </div>
+              </div>
+
+              {/* pokemon types */}
+              <div className='sm:flex block items-center space-x-2'>
+                <div className='flex '>
+                  <div className='text-lg font-medium mb-2 flex items-center mr-2' >
+                    <p>Type</p>
+                    <p className='text-sm text-gray-500 ml-1'>(max 3)</p>
+                  </div>
+                  <Dropdown items={availablePokemonTypes} onSelect={handleSelection} canOpen={pokemonTypes.length < 3}/>
+                </div>
+
+                <div className='flex space-x-2 mt-2 md:mt-0'>
+                  {pokemonTypes.map((type, index) => (
+                    <div key={index} className='w-fit p-2 rounded-md border-2 border-primaryBlue font-semibold relative'>
+                      <p>{type}</p>
+                      <div className='absolute -top-1 -right-1 text-red-700' onClick={() => removeType(type)}>
+                        <IoMdCloseCircle />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
               
@@ -379,16 +413,16 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
                   <animated.textarea
                     id="pokemonDescription"
                     placeholder="Enter description"
-                    value={description}
+                    value={description.value}
                     onChange={onDescChange}
                     className="border border-gray-300 rounded-lg p-2 text-lg focus:outline-none focus:ring-2 focus:ring-primaryBlue w-full max-h-44 min-h-10"
-                    style={descAnimated}
+                    style={description.animated}
                     />
-                  <animated.div className='absolute w-fit bottom-2 right-2' style={descAnimated}>
-                    {description.length}/{descriptionMaxLength}
+                  <animated.div className='absolute w-fit bottom-2 right-2' style={description.animated}>
+                    {description.value.length}/{descriptionMaxLength}
                   </animated.div>
                 </div>
-                <p className={ `text-red-600 font-bold ml-1 ${visibleDescErr ? "opacity-100 " : "opacity-0 "} transition-all duration-300`}>{descriptionErr}</p>
+                <p className={ `text-red-600 font-bold ml-1 ${description.visibleError ? "opacity-100 " : "opacity-0 "} transition-all duration-300`}>{description.error}</p>
               </div>
 
               {/* Submit Button */}

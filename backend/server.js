@@ -21,12 +21,7 @@ app.listen(PORT, () => {
     console.log(`App listening on http://localhost:${PORT}`);
 });
 
-app.get("/", (req, res) => {
-    console.log("here")
-
-    res.status(200).json({ success: true, data: "here" }) 
-});
-
+// get all pokemon 
 app.get("/getPokemon", async(req,res) => {
     const pokemon = [];
 
@@ -63,10 +58,9 @@ app.get("/getPokemon", async(req,res) => {
     }
 })
 
+// get pokemon data by name
 app.get("/getPokemon/:name", async(req,res) => {
     const { name } = req.params;
-
-    console.log(name)
 
     try {
         const response = await axios.get("https://pokeapi.co/api/v2/pokemon/"+name);
@@ -106,7 +100,7 @@ app.get("/getPokemon/:name", async(req,res) => {
         
         
         // let abilities = data.abilities;
-        // console.log(abilities)
+        
         // pokemon types
         let types = data.types.map(type => type.type.name)
 
@@ -198,7 +192,6 @@ app.post("/image", upload.single("image"), async(req, res) => {
         formData.set("key", apiKey); // Replace with your API key
         formData.append("image", imageBase64);
 
-
         const response = await axios.post("https://api.imgbb.com/1/upload", formData, {
     
         });
@@ -218,9 +211,16 @@ app.post("/image", upload.single("image"), async(req, res) => {
 app.get("/types", async(req,res) => {
 
     try {
-        const response = await axios.get("https://pokeapi.co/api/v2/type/")
+        const response = await axios.get("https://pokeapi.co/api/v2/type/", {
+            params: {
+                limit: 50
+            }
+        })
 
-        res.status(200).json({ success: true, data: response.data }) 
+
+        const types = response.data.results.map(item => item.name);
+
+        res.status(200).json({ success: true, data: types }) 
     } catch (err) {
         const errorMsg = err.message;
         console.error(errorMsg)

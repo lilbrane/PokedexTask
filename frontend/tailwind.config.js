@@ -12,10 +12,15 @@ module.exports = {
         primaryWhite: "#e0e6e0",
         lightBlue: "#05749b"
 
-      }
+      },
+      clipPath: {
+        triangle: 'polygon(50% 0%, 0% 100%, 100% 100%)',
+      },
     },
   },
   plugins: [
     require('tailwind-scrollbar-hide'),
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
   ],
 };

@@ -60,3 +60,33 @@ code {
   transform: scale(1.25);
   transition: transform 0.2s ease;
 }
+
+
+.arrow-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%; /* Ensure the container takes up full height */
+  align-items: center;
+}
+
+.arrow-top, .arrow-bottom {
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+}
+
+.arrow-top {
+  border-bottom: 30px solid #2f3440; /* Top arrow */
+}
+
+.arrow-bottom {
+  border-top: 30px solid #2f3440; /* Bottom arrow */
+}
+
+.arrow-line {
+  width: 2px;
+  background-color: #2f3440;
+  flex-grow: 1; /* Make the line take up the remaining space */
+}

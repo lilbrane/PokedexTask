@@ -3,6 +3,8 @@ import { EmptyPokemonLng, PokemonObjt, PokemonObjtLong } from '../pokemonShortOb
 import axios from 'axios';
 import { IoCaretForwardOutline, IoCaretBackOutline  } from "react-icons/io5";
 import TextInLogo from './TextInLogo';
+import Loader from './Loader';
+import { AiOutlineArrowUp, AiOutlineArrowDown } from 'react-icons/ai'; // Arrow icons
 
 interface PokemonInfoParams{
     selectedPokemon: PokemonObjt
@@ -15,7 +17,10 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
     const [pokemonIsOfficial, setPokemonIsOfficial] = useState(false);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
+    // on load / on selectedPokemon name change, call backend to GET pokemon info if pokemon is official,
+    // if pokemon is not official = we created it, get its data from localhost
     useEffect(() => {
+      setShowPokemonData(true)
         if (selectedPokemon.url !== "" && selectedPokemon.official) {
           setPokemonInfo(EmptyPokemonLng)
             const fetchData = async () => {
@@ -24,10 +29,7 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
                 const { data } = response.data;
 
                 if (data) {
-                  console.log("data", data)
-
                     setPokemonInfo(data); 
-                    setShowPokemonData(true);
                     setShownImageIdx(0);
                   }
 
@@ -48,7 +50,6 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
             const savedPokemon = JSON.parse(localStoragePoke);
 
             savedPokemon.forEach((pokemon: any) => {
-              console.log(pokemon)
               if(pokemon.name == selectedPokemon.name){
                 let poke = { ...EmptyPokemonLng }; 
                 poke.name = selectedPokemon.name;
@@ -56,12 +57,11 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
                 poke.image = pokemon.imageUrl;
                 poke.weight = pokemon.weight;
                 poke.height = pokemon.height;
+                poke.types = pokemon.types;
+
                 setPokemonInfo(poke); 
-                setShowPokemonData(true);
-      
                 setPokemonIsOfficial(false)
               }
-                
             });
           }
         }
@@ -71,7 +71,6 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
         }, [selectedPokemon.name]);  
 
     const nextImage = () => {
-      console.log(pokemonInfo.sprites.length, shownImageIdx)
       if(shownImageIdx === pokemonInfo.sprites.length - 1)
         setShownImageIdx(0);
       else
@@ -84,15 +83,32 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
       else
         setShownImageIdx(shownImageIdx - 1)
     }
+
+    const abilityEffectName = (effect: string | null, index: number) => {
+      if(!effect) return "No effect description"
+
+      else if(hoveredIndex === index)
+        return effect
+      else 
+        return effect?.substring(0, 100) + '...'
+    }
     
   return (
     <div>
+      {/* noPokemon selected or undefiend pokemon */}
         {!showPokemonData ?
-            <p>
-                {selectedPokemon.name === "" && "No pokemon selected :("}
-                {(selectedPokemon.name !== "" && selectedPokemon.url === "") && 
-                `Pokemon ${selectedPokemon.name} doesn't exist`}
-            </p>
+            <div className='text-xl flex'>
+                  <div className=' bg-opacity-45 p-4 rounded-xl w-fit mx-auto'>
+                    {selectedPokemon.name === "" && 
+                      <p>No pokemon selected :(</p>
+                    }
+                    {(selectedPokemon.name !== "" && selectedPokemon.url === "") && 
+                      <p>Pokemon with name '{selectedPokemon.name}' doesn't exist </p>
+                    }
+
+                    <p className='text-lg'>Type a pokemon name in the searchbar or click the random button to select a random pokemon</p>
+                  </div>
+            </div>
         :
         (
             <div className=''>
@@ -101,10 +117,22 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
                   <div className='lg:flex md:col-span-4 col-span-8 relative'>
 
                     {/* weight and height */}
-                    <div className="flex justify-between relative lg:w-1/4 md:items-center items-center">
-                      <div className='flex lg:items-center sm:items-center text-3xl'>
-                        <p>{pokemonInfo.height} Cm</p>
+                    <div className="flex  relative lg:w-1/4 md:items-center items-center  justify-between sm:mr-10">
+
+                      <div className='flex h-full'>
+                        {/* arrow on side */}
+                        <div className="invisible lg:visible flex flex-col justify-between h-full items-center bg-red">
+                          <div className=" w-0 h-0 lg:border-l-[15px] lg:border-r-[15px] lg:border-b-[30px] border-l-[5px] border-r-[5px] border-b-[10px] border-transparent border-b-[#2f3440]"></div> 
+                          <div className="w-[2px] bg-[#2f3440] flex-grow"></div>
+                          <div className="w-0 h-0 lg:border-l-[15px] lg:border-r-[15px] lg:border-t-[30px] border-l-[5px] border-r-[5px] border-t-[10px] border-transparent border-t-[#2f3440]"></div>
+                        </div>
+
+
+                        <div className='flex lg:items-center sm:items-center text-3xl'>
+                          <p>{pokemonInfo.height} Cm</p>
+                        </div>
                       </div>
+
                       <div className='lg:absolute right-2 top-2'>
                         <TextInLogo textInMiddle={pokemonInfo.weight.toString() + " Kg"} baseSize={100} />
                       </div>
@@ -119,7 +147,7 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
 
                         {/* other sprites */}
                         {(pokemonIsOfficial && pokemonInfo.sprites.length > 0) &&
-                          <div className='absolute xl:bottom-2 lg:bottom-14 md:bottom-0 bottom-0 md:right-0 right-12 flex items-end '>
+                          <div className='absolute xl:bottom-2 2xl:right-20 lg:bottom-14 md:bottom-0 bottom-0 md:right-0 right-12 flex items-end '>
                             <IoCaretBackOutline onClick={prevImage} size={30} className='arrowIcons'/>
                             <div className=''>
                               <div className='xl:w-32 xl:h-32 lg:w-28 lg:h-28 sm:w-20 sm:h-20 w-10 h-10 mx-auto rounded-full border-2 border-primaryBlue p-2 flex justify-center items-center bg-primaryWhite '>
@@ -138,7 +166,7 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
                   </div>
 
                   {/* other info*/}
-                  <div className='md:col-span-4 col-span-8 p-4 space-y-4  '>
+                  <div className='md:col-span-4 col-span-8 p- space-y-4  '>
                     {/* name and types */}
                     <div className='text-left md:space-y-4 nonSelectable flex md:block items-center space-x-4 '>
                       <p className='md:text-3xl text-xl font-semibold '>
@@ -146,7 +174,7 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
                       </p>
                       <div className='md:w-2/3 flex space-x-4 '>
                         {pokemonInfo.types.map((type, index) => (
-                          <div key={index} className='w-fit p-2 rounded-md border-2 border-primaryRed'>
+                          <div key={index} className='w-fit p-2 rounded-md border-2 border-primaryRed bg-lightBlue bg-opacity-20'>
                             {type}
                           </div>
                         ))}
@@ -171,49 +199,47 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
                             <div>
                               <p className='text-xl'>{pokemonInfo.name} abilities:</p>
                               { pokemonInfo.abilities &&
-        
-                              <div className="max-h-[350px]  overflow-hidden">
-                                <table className="w-full table-auto">
-                                  <thead>
-                                    <tr>
-                                      <th className="px-4 py-2">Name</th>
-                                      <th className="px-4 py-2">Effect</th>
-                                    </tr>
-                                  </thead>
-                                </table>
-                              
-                              <div className="overflow-y-auto h-[calc(350px-36px)]">
-                                <table className="w-full table-auto">
-                                  <tbody>
-                                    {pokemonInfo.abilities.map((ability, index) => (
-                                      <tr key={index} className="hover:bg-primaryBlue hover:bg-opacity-35 border-b-2 border-primaryBlue" 
-                                      onMouseEnter={() => setHoveredIndex(index)}  // Mouse enters
-                                      onMouseLeave={() => setHoveredIndex(null)}  // Mouse leaves
-                                    >
-                                        <td className="px-4 py-2">{ability.name}</td>
-                                        <td className="px-4 py-2">
-                                          {hoveredIndex === index
-                                              ? ability.effect // Show full effect if this row is hovered
-                                              : ability.effect?.substring(0, 100) + '...'} 
-                                        </td>
+                                <div className="max-h-[350px]  overflow-hidden">
+                                  <table className="w-full table-auto">
+                                    <thead>
+                                      <tr>
+                                        <th className="px-4 py-2">Name</th>
+                                        <th className="px-4 py-2">Effect</th>
                                       </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                              </div>
-        
+                                    </thead>
+                                  </table>
+                                
+                                  <div className="overflow-y-auto h-[calc(350px-36px)]">
+                                    <table className="w-full table-auto">
+                                      <tbody>
+                                        {pokemonInfo.abilities.map((ability, index) => (
+                                          <tr key={index} className="hover:bg-primaryBlue hover:bg-opacity-35 border-b-2 border-primaryBlue" 
+                                          onMouseEnter={() => setHoveredIndex(index)}  // Mouse enters
+                                          onMouseLeave={() => setHoveredIndex(null)}  // Mouse leaves
+                                        >
+                                            <td className="px-4 py-2">{ability.name}</td>
+                                            <td className="px-4 py-2">
+                                              {abilityEffectName(ability.effect, index)}
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
                               }
                             </div>
                           )
                         }
-                        
                       </div>
                   </div>
-
                 </div>
               ) : (
-                <p>Loading...</p> // Show loading state when info is retrieving
+                <div className='flex space-x-2 mx-auto w-fit text-xl my-8'>
+                  <p>Loading pokemon</p>
+                  <Loader />
+                </div>
+
               )}
             </div>
           )
