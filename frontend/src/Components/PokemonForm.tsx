@@ -1,15 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react'
-import noImageSelected from "../assets/imageNotSelected.png"
-import { MdOutlineAddPhotoAlternate } from "react-icons/md";
-import { PokemonObjt } from '../pokemonShortObj';
-import { useShakeLtoR, useHideAfterSeconds } from '../anim';
-import { animated } from 'react-spring';
 import axios from 'axios';
+import { animated } from 'react-spring';
+
+import { useInput } from "../hooks/useInput"
+import { PokemonObjt } from '../pokemonShortObj';
+
+import noImageSelected from "../assets/imageNotSelected.png"
+import { useShakeLtoR, useHideAfterSeconds } from '../anim';
 import Loader from './Loader';
-import { FaCheck } from "react-icons/fa";
 import Dropdown from './Dropdown';
 import { IoMdCloseCircle } from "react-icons/io";
-import { useInput } from "../hooks/useInput"
+import { FaCheck } from "react-icons/fa";
+import { MdOutlineAddPhotoAlternate } from "react-icons/md";
+
 
 interface PokemonFormProps{
   pokemonNames: PokemonObjt[];
@@ -92,7 +95,7 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
   const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
 
-    if (input.length <= nameMaxLenght && /^[A-Za-z]*$/.test(input) || input === "")
+    if (input.length <= nameMaxLenght && /^[A-Za-z]*$/.test(input))
       name.setValue(input)
   }
 
@@ -154,7 +157,7 @@ const PokemonForm: React.FC<PokemonFormProps> = ({pokemonNames, setPokemonNames}
 
      // check name if blank and if pokemon with name already exists
      if (pokemonNames.some(pokemon => pokemon.name.toLowerCase() === name.value.toLowerCase())) {
-      name.setError(`Pokemon with name \"${name}\" already exists`);
+      name.setError(`Pokemon with name "${name}" already exists`);
       nameFieldErr = true;
     }
     else if(name.value === ""){

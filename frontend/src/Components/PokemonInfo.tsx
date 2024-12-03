@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { EmptyPokemonLng, PokemonObjt, PokemonObjtLong } from '../pokemonShortObj'
 import axios from 'axios';
+
+import { EmptyPokemonLng, PokemonObjt, PokemonObjtLong } from '../pokemonShortObj'
 import { IoCaretForwardOutline, IoCaretBackOutline  } from "react-icons/io5";
 import TextInLogo from './TextInLogo';
 import Loader from './Loader';
-import { AiOutlineArrowUp, AiOutlineArrowDown } from 'react-icons/ai'; // Arrow icons
 
 interface PokemonInfoParams{
     selectedPokemon: PokemonObjt
@@ -50,7 +50,7 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
             const savedPokemon = JSON.parse(localStoragePoke);
 
             savedPokemon.forEach((pokemon: any) => {
-              if(pokemon.name == selectedPokemon.name){
+              if(pokemon.name === selectedPokemon.name){
                 let poke = { ...EmptyPokemonLng }; 
                 poke.name = selectedPokemon.name;
                 poke.description = pokemon.description;
@@ -112,7 +112,7 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
         :
         (
             <div className=''>
-              {pokemonInfo != EmptyPokemonLng ? (
+              {pokemonInfo !== EmptyPokemonLng ? (
                 <div className='p-8 grid grid-cols-8 '>
                   <div className='lg:flex md:col-span-4 col-span-8 relative'>
 

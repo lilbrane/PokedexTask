@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import Dropdown from './Dropdown'
 import { FaRandom } from "react-icons/fa";
 import {PokemonObjt, EmptyPokemon} from "../pokemonShortObj"
 
@@ -83,7 +82,7 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
 
     const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if(similarPokemonName.url != ""){
+        if(similarPokemonName.url !== ""){
             setTypedPokemon(similarPokemonName)
         }
 
