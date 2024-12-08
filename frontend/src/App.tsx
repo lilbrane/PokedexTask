@@ -11,7 +11,6 @@ import FavouritePokemon from './Components/FavouritePokemon';
 function App() {
   const [pokemon, setPokemon] = useState<PokemonObjt[]>([]);
   const [selectedPokemon, setSelectedPokemon] = useState<PokemonObjt>(EmptyPokemon);
-  const [viewPokemon, setViewPokemon] = useState(true);
   const [screen, setScreen] = useState(0);
 
   useEffect(() => {
@@ -46,8 +45,6 @@ function App() {
     setScreen(0);
     setSelectedPokemon(choosenPokemon);
   }
-
-  const screenOpt = []
 
   return (
     <div className="App bg-primaryWhite">
