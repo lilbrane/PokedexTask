@@ -29,7 +29,6 @@ app.get("/getPokemon", async(req,res) => {
     const limit = 300;
 
     try {
-
         while(true){
 
             const response = await axios.get("https://pokeapi.co/api/v2/pokemon", {
@@ -47,7 +46,6 @@ app.get("/getPokemon", async(req,res) => {
 
             if(response.data.results.length < limit) break
         }
-
         
         res.status(200).json({ success: true, data: pokemon }) 
     } catch (err) {

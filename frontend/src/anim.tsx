@@ -38,3 +38,19 @@ import { SpringValues } from "react-spring";
   
     return hideAfterSeconds;
   };
+
+
+  export const useStartMove = (checker: boolean, setter: React.Dispatch<React.SetStateAction<boolean>>): SpringValues<{ transform: string }> => useSpring({
+    to: checker ? [
+      { transform: "rotate(15deg)" },
+      { transform: "rotate(-15deg)" },
+      { transform: "rotate(0deg)" },
+    ]
+  : { transform: "rotate(0deg)" },
+  from: { transform: "rotate(0deg)" },
+  config: { tension: 170, friction: 26, duration: 100},
+    reset: true,
+    onRest: () => {
+      if(checker) setter(false)
+    }
+  });

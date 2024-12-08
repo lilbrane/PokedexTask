@@ -5,10 +5,14 @@ import { EmptyPokemonLng, PokemonObjt, PokemonObjtLong } from '../pokemonShortOb
 import { IoCaretForwardOutline, IoCaretBackOutline  } from "react-icons/io5";
 import TextInLogo from './TextInLogo';
 import Loader from './Loader';
+import { FaRegStar, FaStar } from "react-icons/fa";
+import { useStartMove } from '../anim';
+import { animated } from 'react-spring';
 
 interface PokemonInfoParams{
     selectedPokemon: PokemonObjt
 }
+
 
 const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
     const [pokemonInfo, setPokemonInfo] = useState<PokemonObjtLong>(EmptyPokemonLng);
@@ -16,6 +20,23 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
     const [shownImageIdx, setShownImageIdx] = useState(0);
     const [pokemonIsOfficial, setPokemonIsOfficial] = useState(false);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+    const [isUsersFavPokemon, setIsUsersFavPokemon] = useState(false);
+
+    const [starAnimate, setStarAnimate] = useState(false);
+    const starAnimated = useStartMove(starAnimate, setStarAnimate);
+
+    // check if current pokemon is users favorite
+    const checkIfFav = () => {
+      const favPokemonData = localStorage.getItem("favouritePokemon");
+
+      if(favPokemonData){
+        const favPokemonArray = JSON.parse(favPokemonData);
+
+        return favPokemonArray.some((pokemon: PokemonObjt) => pokemon.name === selectedPokemon.name)
+      }
+      else 
+        return  false
+    }
 
     // on load / on selectedPokemon name change, call backend to GET pokemon info if pokemon is official,
     // if pokemon is not official = we created it, get its data from localhost
@@ -23,6 +44,7 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
       setShowPokemonData(true)
         if (selectedPokemon.url !== "" && selectedPokemon.official) {
           setPokemonInfo(EmptyPokemonLng)
+          console.log(selectedPokemon)
             const fetchData = async () => {
               try {
                 const response = await axios("http://localhost:3001/getPokemon/"+selectedPokemon.name);
@@ -41,6 +63,7 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
             };
       
             fetchData();
+            setIsUsersFavPokemon(checkIfFav());
           }
 
         // if selected pokemon is one of the created ones
@@ -91,6 +114,37 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
         return effect
       else 
         return effect?.substring(0, 100) + '...'
+    }
+
+
+   
+
+    const addOrRemoveFavourite = () => {
+      const favPokemonData = localStorage.getItem("favouritePokemon");
+
+      if(favPokemonData){
+        const favPokemonArray = JSON.parse(favPokemonData);
+
+        // add
+        if(!isUsersFavPokemon){
+          favPokemonArray.push(selectedPokemon);
+          localStorage.setItem("favouritePokemon", JSON.stringify(favPokemonArray));
+          setIsUsersFavPokemon(true);
+        }
+        // remove
+        else{
+          const updatedArray = favPokemonArray.filter((pokemon: PokemonObjt) => pokemon.name !== selectedPokemon.name);
+          localStorage.setItem("favouritePokemon", JSON.stringify(updatedArray));
+          setIsUsersFavPokemon(false);
+        }
+        
+      }
+      else{
+        const selectedPokeString = JSON.stringify([selectedPokemon]);
+        localStorage.setItem("favouritePokemon", selectedPokeString);
+      }
+
+      
     }
     
   return (
@@ -168,10 +222,25 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
                   {/* other info*/}
                   <div className='md:col-span-4 col-span-8 p- space-y-4  '>
                     {/* name and types */}
-                    <div className='text-left md:space-y-4 nonSelectable flex md:block items-center space-x-4 '>
-                      <p className='md:text-3xl text-xl font-semibold '>
-                        {pokemonInfo.name}
-                      </p>
+                    <div className='text-left md:space-y-4  flex md:block items-center space-x-4 '>
+                      <div className='flex items-center space-x-2'>
+                        <p className='md:text-3xl text-xl font-semibold nonSelectable'>
+                          {pokemonInfo.name}
+                        </p>
+                        {/* fav option */}
+                        <animated.div className='text-2xl  hover:scale-110 text-primaryBlue' onClick={() => addOrRemoveFavourite()}
+                          onMouseEnter={() => setStarAnimate(true)}
+                          onMouseLeave={() => setStarAnimate(false)}
+                          style={starAnimated}
+                          >
+                          {isUsersFavPokemon 
+                            ? 
+                              <FaStar />
+                            :
+                              <FaRegStar />
+                        }
+                        </animated.div>
+                      </div>
                       <div className='md:w-2/3 flex space-x-4 '>
                         {pokemonInfo.types.map((type, index) => (
                           <div key={index} className='w-fit p-2 rounded-md border-2 border-primaryRed bg-lightBlue bg-opacity-20'>

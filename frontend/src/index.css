@@ -90,3 +90,68 @@ code {
   background-color: #2f3440;
   flex-grow: 1; /* Make the line take up the remaining space */
 }
+/* 
+.pokemonInList{
+  border: #e0e6e0 2px solid;
+
+}
+.pokemonInList:hover{
+  border: #2f3440 2px solid;
+} */
+
+.pokemonInList {
+  position: relative; /* Ensures pseudo-elements are positioned relative to the parent */
+}
+
+.pokemonInList::before,
+.pokemonInList::after,
+.pokemonInList .corner-top-right,
+.pokemonInList .corner-bottom-left {
+  content: '';
+  position: absolute;
+  width: 25px; /* Adjust size for corner appearance */
+  height: 15px;
+  border: 4px solid #e0e6e0; /* Default border color */
+  border-radius: 4px; /* Add rounding to the corners */
+
+}
+
+/* Top-left corner */
+.pokemonInList::before {
+  top: 0;
+  left: 0;
+  border-right: none;
+  border-bottom: none;
+}
+
+/* Bottom-right corner */
+.pokemonInList::after {
+  bottom: 0;
+  right: 0;
+  border-left: none;
+  border-top: none;
+}
+
+/* Top-right corner */
+.pokemonInList .corner-top-right {
+  top: 0;
+  right: 0;
+  border-left: none;
+  border-bottom: none;
+}
+
+/* Bottom-left corner */
+.pokemonInList .corner-bottom-left {
+  bottom: 0;
+  left: 0;
+  border-right: none;
+  border-top: none;
+}
+
+/* Hover effect */
+.pokemonInList:hover::before,
+.pokemonInList:hover::after,
+.pokemonInList:hover .corner-top-right,
+.pokemonInList:hover .corner-bottom-left {
+  border-color: #d33d26; /* Change color on hover */
+}

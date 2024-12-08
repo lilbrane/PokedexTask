@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface DropdownProps {
   items: string[]; 
   onSelect: (item: string) => void; 
-  canOpen: boolean
+  canOpen: boolean;
+  defaultSelect?: string | null;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ items, onSelect, canOpen}) => {
+const Dropdown: React.FC<DropdownProps> = ({ items, onSelect, canOpen, defaultSelect = null}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
@@ -20,6 +21,10 @@ const Dropdown: React.FC<DropdownProps> = ({ items, onSelect, canOpen}) => {
     if(canOpen)
       setIsOpen(!isOpen)
   }
+
+  useEffect(() => {
+    setSelectedItem(defaultSelect);
+  }, []);
 
   return (
     <div className="relative inline-block min-w-24 w-auto">

@@ -5,10 +5,14 @@ import axios from 'axios';
 import PokemonInfo from './Components/PokemonInfo';
 import {EmptyPokemon, PokemonObjt} from "./pokemonShortObj"
 import PokemonForm from './Components/PokemonForm';
+import PokemonList from './Components/PokemonList';
+import FavouritePokemon from './Components/FavouritePokemon';
 
 function App() {
   const [pokemon, setPokemon] = useState<PokemonObjt[]>([]);
   const [selectedPokemon, setSelectedPokemon] = useState<PokemonObjt>(EmptyPokemon);
+  const [viewPokemon, setViewPokemon] = useState(true);
+  const [screen, setScreen] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,11 +42,31 @@ function App() {
     fetchData();
   }, []);
 
+  const choosePokemon = (choosenPokemon: PokemonObjt) => {
+    setScreen(0);
+    setSelectedPokemon(choosenPokemon);
+  }
+
+  const screenOpt = []
+
   return (
     <div className="App bg-primaryWhite">
-      <Topbar availablePokemon={pokemon} selectedPokemon={selectedPokemon} setSelectedPokemon={setSelectedPokemon}/>
-      <PokemonInfo  selectedPokemon={selectedPokemon}/>
-      <PokemonForm pokemonNames={pokemon} setPokemonNames={setPokemon}/>
+      <Topbar availablePokemon={pokemon} selectedPokemon={selectedPokemon} choosePokemon={choosePokemon} setScreen={setScreen} activeScreen={screen}/>
+      { 
+        screen === 0 &&
+        <section>
+          <PokemonInfo  selectedPokemon={selectedPokemon}/>
+          <PokemonForm pokemonNames={pokemon} setPokemonNames={setPokemon}/>
+        </section>    
+      }
+      {
+        screen === 1 &&
+          <PokemonList availablePokemon={pokemon} setAvailablePokemon={setPokemon} choosePokemon={choosePokemon}/>
+      }
+      {
+        screen === 2 &&
+        <FavouritePokemon choosePokemon={choosePokemon}/>
+      }
     </div>
   );
 }

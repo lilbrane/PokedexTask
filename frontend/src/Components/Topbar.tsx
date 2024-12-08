@@ -1,20 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { FaRandom } from "react-icons/fa";
 import {PokemonObjt, EmptyPokemon} from "../pokemonShortObj"
+import { FaStar } from "react-icons/fa";
 
 
 interface TopbarParams {
  availablePokemon: PokemonObjt[],
  selectedPokemon: PokemonObjt,
- setSelectedPokemon: React.Dispatch<React.SetStateAction<PokemonObjt>>; 
+ choosePokemon: (choosenPokemon: PokemonObjt) => void; 
+ setScreen: React.Dispatch<React.SetStateAction<number>>;
+ activeScreen: number;
 }
 
-const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setSelectedPokemon}) => {
+const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, choosePokemon, setScreen, activeScreen}) => {
     const [typedPokemon, setTypedPokemon] = useState(selectedPokemon);
     const [similarPokemonName, setSimilarPokemonName] = useState<PokemonObjt>(EmptyPokemon)
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [filteredPokemon, setFilteredPokemon] = useState<PokemonObjt[]>([])
+    const [filteredPokemon, setFilteredPokemon] = useState<PokemonObjt[]>([]);
 
     const dropdownRef = useRef<HTMLUListElement | null>(null);
 
@@ -74,7 +77,7 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
     };
 
     const pokemonSelect = (pokemon: PokemonObjt) => {
-        setSelectedPokemon(pokemon);
+        choosePokemon(pokemon);
         setTypedPokemon(pokemon);
         setSimilarPokemonName(pokemon)
         setIsDropdownOpen(false);
@@ -87,7 +90,7 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
         }
 
         setIsDropdownOpen(false);
-        setSelectedPokemon(similarPokemonName)
+        choosePokemon(similarPokemonName)
     }
 
     const choseRandomPokemon = () => {
@@ -99,7 +102,7 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
 
         setTypedPokemon(randomPokemon)
         setSimilarPokemonName(randomPokemon)
-        setSelectedPokemon(randomPokemon)
+        choosePokemon(randomPokemon)
 
     }
 
@@ -133,12 +136,28 @@ const Topbar: React.FC<TopbarParams> = ({availablePokemon, selectedPokemon, setS
             
 
         </div>
-        <div className='flex w-1/4 items-center md:text-base text-sm'>
+        <div className='w-1/4 flex items-center justify-evenly'>
+
+            <div className='flex  items-center md:text-base text-sm'>
+                <button 
+                onClick={choseRandomPokemon}
+                className='flex items-center mx-auto p-2 rounded-md  hover:scale-105 transition-all duration-200 bg-primaryBlue text-primaryWhite space-x-2'>
+                    <p>Random</p>
+                    <FaRandom />
+                </button>
+            </div>
+            <div className='flex  items-center md:text-base text-sm'>
+                <button 
+                    className='flex items-center mx-auto p-2 rounded-md  hover:scale-105 transition-all duration-200 bg-primaryBlue text-primaryWhite space-x-2'
+                    onClick={() => setScreen((activeScreen === 1) ? 0 : 1)}
+                    >
+                    All pokemon</button>
+            </div>
             <button 
-            onClick={choseRandomPokemon}
-            className='flex items-center mx-auto p-2 rounded-md  hover:scale-105 transition-all duration-200 bg-primaryBlue text-primaryWhite space-x-2'>
-                <p>Random</p>
-                <FaRandom />
+                className='items-center flex text-3xl rounded-full bg-primaryBlue bg-opacity-40 h-fit p-2 text-yellow-400 ' 
+                onClick={() => setScreen(2)}
+                >
+                <FaStar className='hover:scale-110'/>
             </button>
         </div>
     </div>
