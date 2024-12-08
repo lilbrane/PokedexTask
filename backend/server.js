@@ -6,6 +6,7 @@ import fs from "fs";
 
 const app = express();
 
+// should be in .env and hidden
 const apiKey = "b822f568ec35a1d5cc873607dfa4c40f";
 const upload = multer({ dest: 'uploads/' });
 
