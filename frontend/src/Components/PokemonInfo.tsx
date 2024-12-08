@@ -44,7 +44,6 @@ const PokemonInfo: React.FC<PokemonInfoParams> = ({selectedPokemon}) => {
       setShowPokemonData(true)
         if (selectedPokemon.url !== "" && selectedPokemon.official) {
           setPokemonInfo(EmptyPokemonLng)
-          console.log(selectedPokemon)
             const fetchData = async () => {
               try {
                 const response = await axios("http://localhost:3001/getPokemon/"+selectedPokemon.name);

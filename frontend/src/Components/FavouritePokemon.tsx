@@ -32,7 +32,6 @@ const FavouritePokemon: React.FC<FavouritePokemonParams> = ({ choosePokemon }) =
                           favPokeArr[index].url, 
                         ]
                       );
-                    console.log(fetchedData)
                     setFavPokemon(fetchedData);
                   } catch (error) {
                     console.error("Error fetching data:", error);
